@@ -54,7 +54,7 @@ class Enemies:
             "vida": 100
         }
         
-        # Nuevos enemigos
+
         self.avispa = {
             "ataque1": 30,
             "ataque2": 45,
@@ -126,8 +126,12 @@ def spawn_enemy(enemy_type):
         attack_total = hormiga_attack * enemy.level
         enemy_life = enemy.hormiga_leon["vida"] * enemy.level
         print(f"Te encontraste con una hormiga leon agresiva, nivel {enemy.level}")
+    elif enemy_type == "dragon":
+        hormiga_attack = random.choice([enemy.dragon["ataque1"], enemy.dragon["ataque2"], enemy.dragon["ataque3"]])
+        attack_total = hormiga_attack * enemy.level
+        enemy_life = enemy.dragon["vida"] * enemy.level
+        print(f"Te encontraste con un dragon, nivel {enemy.level}")
 
-    # Añadir lógica para que se muestren otros enemigos al azar aquí si se desea
 
     while enemy_life > 0:
         personaje_fuerza = fuerzaTotal.multiplicador * multi
@@ -218,8 +222,10 @@ def enter_forest():
     number = random.randint(1, 10)
     if number > 2:
         spawn_enemy("hormiga")
-    else:
+    elif number ==4:
         spawn_enemy("hormiga_leon")
+    elif number == 5:
+        spawn_enemy("dragon")
 
 class Shop:
     def __init__(self):
