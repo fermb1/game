@@ -1,7 +1,5 @@
 import random
 
-
-
 def start_game():
     print("\nBienvenido al juego")
     new_game = input("¿Crear nueva partida? (si/no): ")
@@ -42,12 +40,50 @@ class Enemies:
             self.level = random.randint(1, 3)
         else:
             self.level = random.randint(4, 10)
-      
+        
         self.hormiga = {
             "ataque1": 10,
             "ataque2": 15,
             "ataque3": 20,
             "vida": 40
+        }
+        self.hormiga_leon = {
+            "ataque1": 40,
+            "ataque2": 60,
+            "ataque3": 80,
+            "vida": 100
+        }
+        
+        # Nuevos enemigos
+        self.avispa = {
+            "ataque1": 30,
+            "ataque2": 45,
+            "ataque3": 50,
+            "vida": 70
+        }
+        self.arana = {
+            "ataque1": 20,
+            "ataque2": 35,
+            "ataque3": 45,
+            "vida": 60
+        }
+        self.escorpion = {
+            "ataque1": 50,
+            "ataque2": 70,
+            "ataque3": 90,
+            "vida": 120
+        }
+        self.oso = {
+            "ataque1": 80,
+            "ataque2": 100,
+            "ataque3": 120,
+            "vida": 200
+        }
+        self.dragon = {
+            "ataque1": 150,
+            "ataque2": 200,
+            "ataque3": 250,
+            "vida": 500
         }
 
 def choose_action():
@@ -59,10 +95,10 @@ def choose_action():
         tienda = Shop()
         tienda.enter_shop(personaje)
     elif action == "bosque":
-        enter_forest(personaje)
+        enter_forest()
     elif action == "mina":
         cave = EnterCave()
-        cave.accion_mina(personaje)
+        cave.accion_mina()
     elif action == "stats":
         personaje.show_stats()
         print(f"Daño actual: {fuerzaTotal.multiplicador}")
@@ -71,7 +107,7 @@ def choose_action():
 multi = 1
 
 def continues():
-    print("""¿Qué haces ahora?""")
+    print("¿Qué haces ahora?")
     camino = input("volver/seguir caminando: ")
     if camino == "volver":
         choose_action()
@@ -81,38 +117,46 @@ def continues():
 def spawn_enemy(enemy_type):
     enemy = Enemies(personaje.stats["nivel"])
     if enemy_type == "hormiga":
-        hormiga_atack = random.choice([enemy.hormiga["ataque1"], enemy.hormiga["ataque2"], enemy.hormiga["ataque3"]])
-        attack_total = hormiga_atack * enemy.level
+        hormiga_attack = random.choice([enemy.hormiga["ataque1"], enemy.hormiga["ataque2"], enemy.hormiga["ataque3"]])
+        attack_total = hormiga_attack * enemy.level
         enemy_life = enemy.hormiga["vida"] * enemy.level
         print(f"Te encontraste con una hormiga agresiva, nivel {enemy.level}")
+    elif enemy_type == "hormiga_leon":
+        hormiga_attack = random.choice([enemy.hormiga_leon["ataque1"], enemy.hormiga_leon["ataque2"], enemy.hormiga_leon["ataque3"]])
+        attack_total = hormiga_attack * enemy.level
+        enemy_life = enemy.hormiga_leon["vida"] * enemy.level
+        print(f"Te encontraste con una hormiga leon agresiva, nivel {enemy.level}")
 
-        while enemy_life > 0:
-            personaje_fuerza = fuerzaTotal.multiplicador * multi
-            accion = input(f"Vida de enemigo: {enemy_life}\n\n1. Atacar\n2. Ver inventario\n3. No hacer nada\n")
-            defensa = random.randint(1, 50)
+    # Añadir lógica para que se muestren otros enemigos al azar aquí si se desea
 
-            if accion == "1":
-                if defensa <= 5:
-                    print("¡El enemigo falló el ataque!")
-                else:
-                    personaje.stats["vida"] -= attack_total
-                    print(f"El golpe fue efectivo, pero el enemigo te atacó, tu vida es de: {personaje.stats['vida']}")
-                
-                enemy_life -= personaje_fuerza
-                if enemy_life <= 0:
-                    print("¡Has derrotado a la hormiga!")
-                    continues()
+    while enemy_life > 0:
+        personaje_fuerza = fuerzaTotal.multiplicador * multi
+        accion = input(f"Vida de enemigo: {enemy_life}\n\n1. Atacar\n2. Ver inventario\n3. No hacer nada\n")
+        defensa = random.randint(1, 50)
 
-            elif accion == "2":
-                print("Mostrando inventario...")
-            elif accion == "3":
-                print("No haces nada. La hormiga te observa...")
+        if accion == "1":
+            if defensa <= 5:
+                print("¡El enemigo falló el ataque!")
+            else:
+                personaje.stats["vida"] -= attack_total
+                print(f"El golpe fue efectivo, pero el enemigo te atacó, tu vida es de: {personaje.stats['vida']}")
+            
+            enemy_life -= personaje_fuerza
+            if enemy_life <= 0:
+                print("¡Has derrotado al enemigo!")
+                continues()
+
+        elif accion == "2":
+            print("Mostrando inventario...")
+        elif accion == "3":
+            print("No haces nada. El enemigo te observa...")
+
 class EnterCave:
     def __init__(self):
         self.picos = {
-            "pico basico": 50,
-            "pico doble": 100,
-            "pico triple": 250
+            "pico basico": 200,
+            "pico doble": 150,
+            "pico triple": 100
         }
         self.pico_seleccionado = None  
         self.pico = False 
@@ -123,7 +167,6 @@ class EnterCave:
 
         if accion_minar == "1":
             if self.pico:
-     
                 if self.pico_seleccionado == "pico basico":
                     self.minar_dificil()
                 elif self.pico_seleccionado == "pico doble":
@@ -132,8 +175,7 @@ class EnterCave:
                     self.minar_facil()
             else:
                 print("No tienes un pico para minar. Ve a la tienda de picos.")
-                self.tienda_picos()
-                
+                self.tienda_picos()           
         elif accion_minar == "2":
             print("Saliendo de la cueva...")
             choose_action()
@@ -161,7 +203,10 @@ class EnterCave:
             print("Selección no válida. Inténtalo de nuevo.")
 
     def minar_dificil(self):
-        print("Minando en modo difícil...")
+        prop = random.randint(1, 2000)
+        if prop <= 10:
+            print("encontraste un diamante de valor: 100")
+            personaje.stats["monedas"] += 100
 
     def minar_mediano(self):
         print("Minando en modo mediano...")
@@ -169,16 +214,12 @@ class EnterCave:
     def minar_facil(self):
         print("Minando en modo fácil...")
 
-#cueva = EnterCave()
-#cueva.accion_mina()
-
-
-
-
 def enter_forest():
     number = random.randint(1, 10)
-    if number > 5:
+    if number > 2:
         spawn_enemy("hormiga")
+    else:
+        spawn_enemy("hormiga_leon")
 
 class Shop:
     def __init__(self):
@@ -239,4 +280,5 @@ class Shop:
                         print("No tienes suficiente dinero para esa compra.")
                 except (ValueError, IndexError):
                     print("Opción no válida. Inténtalo de nuevo.")
+
 start_game()
