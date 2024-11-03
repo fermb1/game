@@ -17,7 +17,9 @@ class Player:
         self.stats = {
             "nivel": 1,
             "vida": 100,
-            "monedas": 50000
+            "monedas": 50000,
+            "hierro" : 0,
+            "punto de encantamiento": 0
         }
         print(f"{self.name} nivel: {self.stats['nivel']} vida: {self.stats['vida']} monedas: {self.stats['monedas']}")
 
@@ -28,7 +30,14 @@ class Player:
         self.stats["monedas"] -= cantidad
 
     def show_stats(self):
-        print(f"{self.name} nivel: {self.stats['nivel']} vida: {self.stats['vida']} monedas: {self.stats['monedas']}")
+        print(f"""
+{self.name} 
+nivel: {self.stats['nivel']} 
+vida: {self.stats['vida']} 
+monedas: {self.stats['monedas']} 
+hierro: {self.stats['hierro']} 
+punto de encantamiento: {self.stats['punto de encantamiento']}
+""")
 
 class WeaponInventory:
     def __init__(self):
@@ -113,6 +122,7 @@ def continues():
         choose_action()
     else:
         print("Sigues caminando...")
+        enter_forest()
 
 def spawn_enemy(enemy_type):
     enemy = Enemies(personaje.stats["nivel"])
@@ -131,6 +141,11 @@ def spawn_enemy(enemy_type):
         attack_total = hormiga_attack * enemy.level
         enemy_life = enemy.dragon["vida"] * enemy.level
         print(f"Te encontraste con un dragon, nivel {enemy.level}")
+    elif enemy_type == "oso":
+        hormiga_attack = random.choice([enemy.oso["ataque1"], enemy.oso["ataque2"], enemy.dragon["ataque3"]])
+        attack_total = hormiga_attack * enemy.level
+        enemy_life = enemy.oso["vida"] * enemy.level
+        print(f"Te encontraste con un oso, nivel {enemy.level}")
 
 
     while enemy_life > 0:
@@ -219,13 +234,62 @@ class EnterCave:
         print("Minando en modo fácil...")
 
 def enter_forest():
+    scene = random.randint(1,5)
+    if scene==1 or scene ==3:
+        accion1()
+    elif scene==2:
+        accion2()
+    elif scene==4 or scene==5:
+        accion3()
+    
+
+def accion3():
+    found = random.randint(1,20)
+    if found >= 15:
+        print("encontraste una moneda")
+        foundMonedas = random.randint(1,30)
+        personaje.stats["monedas"] += foundMonedas
+    elif found == 14:
+        hierroFound: random.randint(1,4)
+        print(f"encontraste {hierroFound} de hierro")
+        personaje.stats["hierro"] += hierroFound
+    elif found == 13:
+        print("encontraste 1 orbe de encantamiento")
+        personaje.stats["hierro"] += 1
+    elif found <= 12 and found >=10 :
+        print("encontraste una piedra de union")
+        if personaje.stats["piedra de union"] == 0:
+            personaje.stats["piedra de union"] +=1
+        else:
+            print("ya tienes una piedra de union, el limite es 1")
+            print("se te dara 100 monedas por venderlo")
+            personaje.stats["monedas"] +=100
+
+
+
+
+        
+
+
+    
+
+def accion2():
+    print("no encontraste nada")
+    continues()
+
+
+def accion1():
     number = random.randint(1, 10)
-    if number > 2:
+    if number == 2:
         spawn_enemy("hormiga")
     elif number ==4:
         spawn_enemy("hormiga_leon")
     elif number == 5:
         spawn_enemy("dragon")
+    elif number == 6:
+        spawn_enemy("oso")
+    else:
+        accion1()
 
 class Shop:
     def __init__(self):
