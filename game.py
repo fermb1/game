@@ -7,10 +7,11 @@ def start_game():
     if new_game == "si":
         global personaje
         personaje = Player()
+        global abrirInventario
+        abrirInventario = abrir_inventario() 
         choose_action()
     else:
         print("Saliendo del juego.")
-
 class Player:
     def __init__(self):
         self.name = input("¿Cuál es tu nombre? ")
@@ -18,7 +19,7 @@ class Player:
             "nivel": 1,
             "vida": 100,
             "monedas": 50000,
-            "hierro" : 0,
+            "hierro": 0,
             "punto de encantamiento": 0
         }
         print(f"{self.name} nivel: {self.stats['nivel']} vida: {self.stats['vida']} monedas: {self.stats['monedas']}")
@@ -349,13 +350,54 @@ def accion1():
     else:
         accion1()
 
+class abrir_inventario:
+    def __init__(self):
+        self.inventario = {f"item{i}": None for i in range(1, 11)}
+        self.inventario_magico = {f"item{i}": None for i in range(1, 7)}
+
+    def agregar_item(self, item):
+        for key in self.inventario:
+            if self.inventario[key] is None:
+                self.inventario[key] = item
+                print(f"{item} agregado al inventario.")
+                return True
+        print("El inventario está lleno.")
+        return False
+
+def inventario():
+    print("Inventario actual:", abrirInventario.inventario)
+    x = input("""
+        ¿Qué quieres hacer ahora?
+        1. Abrir el segundo inventario
+        2. Salir
+    """)
+    if x == "1":
+        inventarioMagico()
+    elif x == "2":
+        choose_action()
+    else:
+        print("Opción no válida")
+        inventario()
+            
+def inventarioMagico():
+    print("Inventario mágico actual:", abrirInventario.inventario_magico)
+    y = input("""
+        ¿Qué quieres hacer ahora?
+        1. Salir
+    """)
+    if y == "1":
+        choose_action()
+    else:
+        print("Opción no válida")
+        inventarioMagico()
+
 class Shop:
     def __init__(self):
         self.paginas_items = [
             {
                 "espada básica": 40,
                 "arco básico": 60,
-                "guadaña basica": ,
+                "guadaña básica": 100,
             },
             {
                 "armadura de plástico": 50,
@@ -377,7 +419,6 @@ class Shop:
             print(f"{i}. {nombre} ({precio} monedas)")
 
     def enter_shop(self, personaje):
-        global multi
         while True:
             print("\nBienvenido a la tienda")
             self.mostrar_items()
@@ -388,15 +429,24 @@ class Shop:
 
             if purchase == "0":
                 self.pagina_actual = (self.pagina_actual + 1) % len(self.paginas_items)
-                segundaPagina()
             elif purchase == "4":
                 print("Saliendo de la tienda.")
                 choose_action()
                 break
-            elif purchase == "1":
-                print("compraste una espada basica")
-
+            else:
+                try:
+                    purchase_index = int(purchase) - 1
+                    item_name, item_price = list(self.paginas_items[self.pagina_actual].items())[purchase_index]
+                    
+                    if personaje.get_coins() >= item_price:
+                        personaje.restar_coins(item_price)
+                        if abrirInventario.agregar_item(item_name):
+                            print(f"Has comprado {item_name}.")
+                        else:
+                            print("No se pudo agregar el objeto al inventario.")
+                    else:
+                        print("No tienes suficientes monedas para este objeto.")
                 except (ValueError, IndexError):
-                    print("Opción no válida. Inténtalo de nuevo.")
-    def segundaPagina():
+                    print("Selección no válida. Inténtalo de nuevo.")
+
 start_game()
