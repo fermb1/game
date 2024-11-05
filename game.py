@@ -20,7 +20,8 @@ class Player:
             "vida": 100,
             "monedas": 50000,
             "hierro": 0,
-            "punto de encantamiento": 0
+            "punto de encantamiento": 0,
+            "elemento": 0
         }
         print(f"{self.name} nivel: {self.stats['nivel']} vida: {self.stats['vida']} monedas: {self.stats['monedas']}")
 
@@ -39,6 +40,61 @@ monedas: {self.stats['monedas']}
 hierro: {self.stats['hierro']} 
 punto de encantamiento: {self.stats['punto de encantamiento']}
 """)
+
+itemPosition = 1
+class abrir_inventario():
+    def __init__(self):
+        self.inventario = {
+            "item1":None,
+            "item2":None,
+            "item3":None,
+            "item4":None,
+            "item5":None,
+            "item6":None,
+            "item7":None,
+            "item8":None,
+            "item9":None,
+            "item10":None,
+        }
+        self.inventario_magico = {
+            "item1":None,
+            "item2":None,
+            "item3":None,
+            "item4":None,
+            "item5":None,
+            "item6":None
+        }
+    def agregarItem1(i):
+        claveAmodificar = list(self.inventario())[{itemPosition}]
+        abrirInventario[claveAmodificar] = i
+
+def inventario():
+    print(abrirInventario.inventario)
+    x = input("""
+        que quieres hacer ahora?
+            1.abrir el segundo inventario
+            2.salir
+            """)
+    if x=="1":
+        inventarioMagico()
+    elif x=="2":
+        choose_action()
+    else:
+        print("opcion no valida")
+        inventario()
+            
+def inventarioMagico():
+    print(abrirInventario.inventario_magico)
+    y = input("""
+            que quieres hacer ahora?
+                      1.salir
+                      """)
+    if y=="1":
+        choose_action()
+    else:
+        print("opcion no valida")
+        inventarioMagico()
+        
 
 class WeaponInventory:
     def __init__(self):
@@ -104,7 +160,8 @@ def choose_action():
         2.bosque
         3.mina
         4.stats           
-        5.inventario           
+        5.inventario
+        6.tienda de encantamientos           
                    """)
     global fuerzaTotal
     fuerzaTotal = WeaponInventory()
@@ -124,61 +181,62 @@ def choose_action():
     elif action == "5":
         print("abriendo inventario")
         inventario()
+    elif action == "6":
+        print("entrando a la tienda de encantamientos")
+        sala_de_encantamientos()
     
-itemPosition = 1
-class abrir_inventario():
-    def __init__(self):
-        self.inventario = {
-            "item1":None,
-            "item2":None,
-            "item3":None,
-            "item4":None,
-            "item5":None,
-            "item6":None,
-            "item7":None,
-            "item8":None,
-            "item9":None,
-            "item10":None,
-        }
-        self.inventario_magico = {
-            "item1":None,
-            "item2":None,
-            "item3":None,
-            "item4":None,
-            "item5":None,
-            "item6":None
-        }
-    def agregarItem1(i):
-        claveAmodificar = list(self.inventario())[{itemPosition}]
-        abrirInventario[claveAmodificar] = i
 
-def inventario():
-    print(abrirInventario.inventario)
-    x = input("""
-        que quieres hacer ahora?
-            1.abrir el segundo inventario
-            2.salir
-            """)
-    if x=="1":
-        inventarioMagico()
-    elif x=="2":
-        choose_action()
-    else:
-        print("opcion no valida")
-        inventario()
-            
-def inventarioMagico():
-    print(abrirInventario.inventario_magico)
-    y = input("""
-            que quieres hacer ahora?
-                      1.salir
-                      """)
-    if y=="1":
-        choose_action()
-    else:
-        print("opcion no valida")
-        inventarioMagico()
+
+def sala_de_encantamientos():
+    while True:
+        print(f"""
+        Bienvenido a la tienda de encantamientos
+        ¿Qué desea?
+            Encantamientos de espada:
+            1. Espada de fuego: 200 monedas (doble de daño)
+            2. Espada de viento: 250 monedas (mayor probabilidad de esquivar el ataque)
+            3. Espada de elemento: 1 de elemento (probabilidad de dar veneno)
+            4. Cambiar de página
+            5. Salir
+        """)
         
+        x = input("¿Qué quieres hacer? ")
+        
+        if x == "1" and personaje.stats["monedas"] >= 200:
+            personaje.restar_coins(200)
+            if abrirInventario.agregar_item("atributo de fuego"):
+                print("Compraste el atributo de fuego y se agregó al inventario.")
+            else:
+                print("El inventario está lleno. No se pudo agregar el objeto.")
+        
+        elif x == "2" and personaje.stats["monedas"] >= 250:
+            personaje.restar_coins(250)
+            if abrirInventario.agregar_item("atributo de viento"):
+                print("Compraste el atributo de viento y se agregó al inventario.")
+            else:
+                print("El inventario está lleno. No se pudo agregar el objeto.")
+        
+        elif x == "3" and personaje.stats["elemento"] >= 1:
+            personaje.stats["elemento"] -= 1  # Suponiendo que el atributo "elemento" se gasta
+            if abrirInventario.agregar_item("atributo de elemento"):
+                print("Compraste el atributo de elemento y se agregó al inventario.")
+            else:
+                print("El inventario está lleno. No se pudo agregar el objeto.")
+        
+        elif x == "4":
+            print("Cambiando de página...")
+            segunda_pagina()
+            break  # Salir de esta función ya que vamos a la segunda página
+        
+        elif x == "5":
+            print("Saliendo de la sala de encantamientos.")
+            choose_action()
+            break  # Salir del bucle y de la función
+        
+        else:
+            print("Opción no válida o fondos insuficientes. Inténtalo de nuevo.")
+
+
 
 multi = 1
 
